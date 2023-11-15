@@ -7,13 +7,15 @@ brain=Brain()
 
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
-Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, True)
-Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, True)
-Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, True)
-Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
-Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
-Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
-Etu_Koura = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
+Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
+Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
+Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
+Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
+Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
+Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+digital_out_a = DigitalOut(brain.three_wire_port.a)
+digital_out_b = DigitalOut(brain.three_wire_port.b)
 
 
 # wait for rotation sensor to fully initialize
@@ -54,12 +56,23 @@ def pre_autonomous():
     wait(1, SECONDS)
 
 def autonomous():
+    
     brain.screen.clear_screen()
     brain.screen.set_cursor(0,20)
     brain.screen.print("autonomous code")
-    # place automonous code here
+
+    Oikea_Etu.spin(FORWARD, 720, DEGREES, wait = False)
+    Oikea_Yla.spin(FORWARD, 720, DEGREES, wait = False)
+    Oikea_Taka.spin(FORWARD, 720, DEGREES, wait = False)
+
+    Vasen_Etu.spin(FORWARD, 720, DEGREES, wait = False)
+    Vasen_Yla.spin(FORWARD, 720, DEGREES, wait = False)
+    Vasen_Taka.spin(FORWARD, 720, DEGREES, wait = False)
 
 def user_control():
+    
+    digital_out_a.set(True)
+    digital_out_b.set(True)
     brain.screen.clear_screen()
     StaattinenAkku = brain.battery.capacity()
     brain.screen.set_font(FontType.MONO20);
@@ -67,19 +80,32 @@ def user_control():
     brain.screen.set_cursor(1,20)
     brain.screen.print(brain.battery.capacity())
     brain.screen.print(" Prosenttia")
+
     while True:
 
         if StaattinenAkku == brain.battery.capacity():
             {}
 
+        #Akun näkyminen näytöllä ja sen muuttujen asettaminen
+
         else:
+
+            if (StaattinenAkku < 25):
+                brain.screen.set_pen_color(Color.RED)
+
+            if (StaattinenAkku < 75):
+                brain.screen.set_pen_color(Color.YELLOW)
+
+            if (StaattinenAkku > 75):
+                brain.screen.set_pen_color(Color.GREEN)
+
             brain.screen.clear_screen()
             brain.screen.set_cursor(1,20)
             brain.screen.print(brain.battery.capacity())
             brain.screen.print(" Prosenttia")
             StaattinenAkku = brain.battery.capacity()
 
-        Motor_Setter = (controller_1.axis2.position)
+        #Ajamis koodi sekä moottoreiden nopeuden asettaminen
 
         Oikea_Etu.spin(FORWARD)
         Oikea_Yla.spin(FORWARD)
@@ -101,17 +127,23 @@ def user_control():
 
         Vasen_Taka.set_velocity(controller_1.axis3.position(), PERCENT)
 
-        if (controller_1.buttonL1.pressing()):
+        if controller_1.buttonR1.pressing():
 
-            Etu_Koura.spin(FORWARD)
+            digital_out_a.set(False)
+            digital_out_b.set(False)
 
-        else:
+        if controller_1.buttonR2.pressing():
 
-            Etu_Koura.stop()
+            digital_out_a.set(True)
+            digital_out_b.set(True)
 
-        if (controller_1.buttonR1.pressing()):
+        if controller_1.buttonL1.pressing():
 
-            Etu_Koura.spin(REVERSE)
+            Puimuri.spin(FORWARD)
+
+        if controller_1.buttonL2.pressing():
+            
+            Puimuri.spin(REVERSE)
 
         wait(20, MSEC)
 
