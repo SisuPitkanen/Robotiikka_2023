@@ -6,16 +6,16 @@ import urandom
 brain=Brain()
 
 # Robot configuration code
-controller_1 = Controller(PRIMARY)
 Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
-Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
-Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
-Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
+Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
+Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
+Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
 Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 digital_out_a = DigitalOut(brain.three_wire_port.a)
 digital_out_b = DigitalOut(brain.three_wire_port.b)
+bumper_manager = Bumper(brain.three_wire_port.c)
 
 
 # wait for rotation sensor to fully initialize
@@ -56,21 +56,52 @@ def pre_autonomous():
     wait(1, SECONDS)
 
 def autonomous():
-    
+
+    looppaaja = True
+
+    while looppaaja = True():
+
+        if bumper_manager.pressing():
+            
+            Puolustus = True
+
+            Vasen_Etu.spin_for(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin_for(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin_for(FORWARD, 90, DEGREES)
+
+        else:
+
+            Puolustus = False
+
+            Oikea_Etu.spin_for(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin_for(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin_for(FORWARD, 90, DEGREES)
+
+            looppaaja = False
+
     brain.screen.clear_screen()
     brain.screen.set_cursor(0,20)
     brain.screen.print("autonomous code")
 
-    Oikea_Etu.spin(FORWARD, 720, DEGREES, wait = False)
-    Oikea_Yla.spin(FORWARD, 720, DEGREES, wait = False)
-    Oikea_Taka.spin(FORWARD, 720, DEGREES, wait = False)
+    Oikea_Etu.set_velocity(50, PERCENT)
+    Oikea_Yla.set_velocity(50, PERCENT)
+    Oikea_Taka.set_velocity(50, PERCENT)
+            
+    Vasen_Etu.set_velocity(50, PERCENT)     
+    Vasen_Yla.set_velocity(50, PERCENT)
+    Vasen_Taka.set_velocity(50, PERCENT)
 
-    Vasen_Etu.spin(FORWARD, 720, DEGREES, wait = False)
-    Vasen_Yla.spin(FORWARD, 720, DEGREES, wait = False)
-    Vasen_Taka.spin(FORWARD, 720, DEGREES, wait = False)
+    Oikea_Etu.spin_for(FORWARD, 720, DEGREES)
+    Oikea_Yla.spin_for(FORWARD, 720, DEGREES)
+    Oikea_Taka.spin_for(FORWARD, 720, DEGREES)
+
+    Vasen_Etu.spin_for(FORWARD, 720, DEGREES)
+    Vasen_Yla.spin_for(FORWARD, 720, DEGREES)
+    Vasen_Taka.spin_for(FORWARD, 720, DEGREES)
 
 def user_control():
     
+    looppaaja = False
     digital_out_a.set(True)
     digital_out_b.set(True)
     brain.screen.clear_screen()
