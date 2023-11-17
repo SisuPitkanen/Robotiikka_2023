@@ -69,6 +69,8 @@ def autonomous():
             Vasen_Yla.spin_for(FORWARD, 90, DEGREES)
             Vasen_Taka.spin_for(FORWARD, 90, DEGREES)
 
+            looppaaja = False
+
         else:
 
             Puolustus = False
