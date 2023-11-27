@@ -6,16 +6,16 @@ import urandom
 brain=Brain()
 
 # Robot configuration code
+controller_1 = Controller(PRIMARY)
 Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
-Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
-Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
-Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
+Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
+Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
+Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
 Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 digital_out_a = DigitalOut(brain.three_wire_port.a)
 digital_out_b = DigitalOut(brain.three_wire_port.b)
-bumper_manager = Bumper(brain.three_wire_port.c)
 
 
 # wait for rotation sensor to fully initialize
@@ -34,13 +34,40 @@ wait(200, MSEC)
 print("\033[2J")
 
 #endregion VEXcode Generated Robot Configuration
+from vex import *
+import urandom
+
+# Brain should be defined by default
+brain=Brain()
+
+# Robot configuration code
+Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
+Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
+Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
+Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
+Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
+Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
+Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+digital_out_a = DigitalOut(brain.three_wire_port.a)
+digital_out_b = DigitalOut(brain.three_wire_port.b)
+bumper_manager = Bumper(brain.three_wire_port.c)
+
+
+# wait for rotation sensor to fully initialize
+wait(30, MSEC)
+# add a small delay to make sure we don't print in the middle of the REPL header
+wait(200, MSEC)
+# clear the console to make sure we don't have the REPL in the console
+print("\033[2J")
+
+#endregion VEXcode Generated Robot Configuration
 
 # ------------------------------------------
 # 
-# 	Project:
-#	Author:
-#	Created:
-#	Configuration:
+#         Project:
+#        Author:
+#        Created:
+#        Configuration:
 # 
 # ------------------------------------------
 
@@ -59,28 +86,6 @@ def autonomous():
 
     looppaaja = True
 
-    while looppaaja = True():
-
-        if bumper_manager.pressing():
-            
-            Puolustus = True
-
-            Vasen_Etu.spin_for(FORWARD, 90, DEGREES)
-            Vasen_Yla.spin_for(FORWARD, 90, DEGREES)
-            Vasen_Taka.spin_for(FORWARD, 90, DEGREES)
-
-            looppaaja = False
-
-        else:
-
-            Puolustus = False
-
-            Oikea_Etu.spin_for(FORWARD, 90, DEGREES)
-            Oikea_Yla.spin_for(FORWARD, 90, DEGREES)
-            Oikea_Taka.spin_for(FORWARD, 90, DEGREES)
-
-            looppaaja = False
-
     brain.screen.clear_screen()
     brain.screen.set_cursor(0,20)
     brain.screen.print("autonomous code")
@@ -88,7 +93,7 @@ def autonomous():
     Oikea_Etu.set_velocity(50, PERCENT)
     Oikea_Yla.set_velocity(50, PERCENT)
     Oikea_Taka.set_velocity(50, PERCENT)
-            
+
     Vasen_Etu.set_velocity(50, PERCENT)     
     Vasen_Yla.set_velocity(50, PERCENT)
     Vasen_Taka.set_velocity(50, PERCENT)
@@ -102,7 +107,7 @@ def autonomous():
     Vasen_Taka.spin_for(FORWARD, 720, DEGREES)
 
 def user_control():
-    
+
     looppaaja = False
     digital_out_a.set(True)
     digital_out_b.set(True)
@@ -138,7 +143,9 @@ def user_control():
             brain.screen.print(" Prosenttia")
             StaattinenAkku = brain.battery.capacity()
 
-        #Ajamis koodi sekä moottoreiden nopeuden asettaminen
+
+            #Ajamis koodi sekä moottoreiden nopeuden asettaminen
+
 
         Oikea_Etu.spin(FORWARD)
         Oikea_Yla.spin(FORWARD)
@@ -148,17 +155,20 @@ def user_control():
         Vasen_Yla.spin(FORWARD)
         Vasen_Taka.spin(FORWARD)
 
-        Oikea_Etu.set_velocity(controller_1.axis2.position(), PERCENT)
+        Oikea_Puoli_Velocity = (controller_1.axis3.position() * -1)
 
-        Oikea_Yla.set_velocity(controller_1.axis2.position(), PERCENT)
+      
+        Oikea_Etu.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
 
-        Oikea_Taka.set_velocity(controller_1.axis2.position(), PERCENT)
-            
-        Vasen_Etu.set_velocity(controller_1.axis3.position(), PERCENT)
-            
-        Vasen_Yla.set_velocity(controller_1.axis3.position(), PERCENT)
+        Oikea_Yla.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
 
-        Vasen_Taka.set_velocity(controller_1.axis3.position(), PERCENT)
+        Oikea_Taka.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
+
+        Vasen_Etu.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
+
+        Vasen_Yla.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
+
+        Vasen_Taka.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
 
         if controller_1.buttonR1.pressing():
 
@@ -175,7 +185,7 @@ def user_control():
             Puimuri.spin(FORWARD)
 
         if controller_1.buttonL2.pressing():
-            
+
             Puimuri.spin(REVERSE)
 
         wait(20, MSEC)
