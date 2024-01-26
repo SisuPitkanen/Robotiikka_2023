@@ -13,9 +13,11 @@ Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
 Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, True)
 Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
 Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
-Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 digital_out_a = DigitalOut(brain.three_wire_port.a)
 digital_out_b = DigitalOut(brain.three_wire_port.b)
+Puimuri = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+bumper_manager = Bumper(brain.three_wire_port.h)
+Linko = Motor(Ports.PORT15, GearSetting.RATIO_18_1, False)
 
 
 # wait for rotation sensor to fully initialize
@@ -34,40 +36,13 @@ wait(200, MSEC)
 print("\033[2J")
 
 #endregion VEXcode Generated Robot Configuration
-from vex import *
-import urandom
 
-# Brain should be defined by default
-brain=Brain()
-
-# Robot configuration code
-Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
-Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
-Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, False)
-Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
-Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
-Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
-Puimuri = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
-digital_out_a = DigitalOut(brain.three_wire_port.a)
-digital_out_b = DigitalOut(brain.three_wire_port.b)
-bumper_manager = Bumper(brain.three_wire_port.c)
-
-
-# wait for rotation sensor to fully initialize
-wait(30, MSEC)
-# add a small delay to make sure we don't print in the middle of the REPL header
-wait(200, MSEC)
-# clear the console to make sure we don't have the REPL in the console
-print("\033[2J")
-
-#endregion VEXcode Generated Robot Configuration
-
-# ------------------------------------------
+# ----------------------------------------
 # 
-#         Project:
-#        Author:
-#        Created:
-#        Configuration:
+#        Project: Competation Template 5v Robotics Year(2023)
+#        Author: Sisu Pitkänen
+#        Created: Sometime
+#        Configuration: Something
 # 
 # ------------------------------------------
 
@@ -84,7 +59,24 @@ def pre_autonomous():
 
 def autonomous():
 
-    looppaaja = True
+    #Kellon asettaminen ja sen huoltaminen
+
+    Aikaraja = True
+    Kello = 0
+
+    while(Kello < 7):
+
+        wait(1, SECONDS)
+
+        Kello + 1
+
+    else:
+
+        Aikaraja = False
+
+    Hyokkays = False
+    Puolustus = False
+    Varmistin = False
 
     brain.screen.clear_screen()
     brain.screen.set_cursor(0,20)
@@ -98,20 +90,219 @@ def autonomous():
     Vasen_Yla.set_velocity(50, PERCENT)
     Vasen_Taka.set_velocity(50, PERCENT)
 
-    Oikea_Etu.spin_for(FORWARD, 720, DEGREES)
-    Oikea_Yla.spin_for(FORWARD, 720, DEGREES)
-    Oikea_Taka.spin_for(FORWARD, 720, DEGREES)
+    if (bumper_manager.pressing() == True and Varmistin == True):
 
-    Vasen_Etu.spin_for(FORWARD, 720, DEGREES)
-    Vasen_Yla.spin_for(FORWARD, 720, DEGREES)
-    Vasen_Taka.spin_for(FORWARD, 720, DEGREES)
+        Varmistin = False
+        
+        Hyokkays = True
+
+    if (bumper_manager.pressing() == False and Varmistin == True):
+
+        Varmistin = False
+
+        Puolustus = True
+
+    if (Puolustus == True and Varmistin == False):
+
+        #Robotti ajaa maalin alle (P)
+
+        Vasen_Etu.spin(FORWARD, 90, DEGREES)
+        Vasen_Yla.spin(FORWARD, 90, DEGREES)
+        Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+        Oikea_Etu.spin(FORWARD, 90, DEGREES)
+        Oikea_Yla.spin(FORWARD, 90, DEGREES)
+        Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+        wait(1, SECONDS)
+
+        #Robotti peruuttaa epätasaisella vauhdilla pois maalista, kääntäen sen (P)
+
+        Vasen_Etu.set_velocity(100, PERCENT)
+        Vasen_Yla.set_velocity(100, PERCENT)
+        Vasen_Taka.set_velocity(100, PERCENT)
+
+        Vasen_Etu.spin(REVERSE, 90, DEGREES)
+        Vasen_Yla.spin(REVERSE, 90, DEGREES)
+        Vasen_Taka.spin(REVERSE, 90, DEGREES)
+
+        Oikea_Etu.spin(REVERSE, 90, DEGREES)
+        Oikea_Yla.spin(REVERSE, 90, DEGREES)
+        Oikea_Taka.spin(REVERSE, 90, DEGREES)
+
+        Oikea_Etu.set_velocity(50, PERCENT)
+        Oikea_Yla.set_velocity(50, PERCENT)
+        Oikea_Taka.set_velocity(50, PERCENT)
+
+        #Robotti ajaa load zonelle (P)
+
+        Vasen_Etu.spin(FORWARD, 90, DEGREES)
+        Vasen_Yla.spin(FORWARD, 90, DEGREES)
+        Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+        Oikea_Etu.spin(FORWARD, 90, DEGREES)
+        Oikea_Yla.spin(FORWARD, 90, DEGREES)
+        Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+        if (Aikaraja == True):
+
+            #Keskelle ja katapulltti perseily (P)
+
+            Oikea_Etu.spin(FORWARD)
+
+        else:
+
+            #Jos aikaa ei enää ole, robotti ajaa tolppaan päin (P)
+
+            Vasen_Etu.spin(REVERSE, 90, DEGREES)
+            Vasen_Yla.spin(REVERSE, 90, DEGREES)
+            Vasen_Taka.spin(REVERSE, 90, DEGREES)
+
+            Vasen_Etu.set_velocity(75, PERCENT)
+            Vasen_Yla.set_velocity(75, PERCENT)
+            Vasen_Taka.set_velocity(75, PERCENT)
+
+            Vasen_Etu.spin(REVERSE, 90, DEGREES)
+            Vasen_Yla.spin(REVERSE, 90, DEGREES)
+            Vasen_Taka.spin(REVERSE, 90, DEGREES)
+
+            Oikea_Etu.spin(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+            #Osu tolppaan (P)
+
+    if(Hyokkays == True and Varmistin == False):
+
+        #Robotti ajaa maalin alle (H)
+
+        Vasen_Etu.spin(FORWARD, 90, DEGREES)
+        Vasen_Yla.spin(FORWARD, 90, DEGREES)
+        Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+        Oikea_Etu.spin(FORWARD, 90, DEGREES)
+        Oikea_Yla.spin(FORWARD, 90, DEGREES)
+        Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+        wait(1, SECONDS)
+
+        #Robotti peruuttaa epätasaisella vauhdilla pois maalista, kääntäen sen (H)
+
+        Oikea_Etu.set_velocity(100, PERCENT)
+        Oikea_Yla.set_velocity(100, PERCENT)
+        Oikea_Taka.set_velocity(100, PERCENT)
+
+        Vasen_Etu.spin(REVERSE, 90, DEGREES)
+        Vasen_Yla.spin(REVERSE, 90, DEGREES)
+        Vasen_Taka.spin(REVERSE, 90, DEGREES)
+
+        Oikea_Etu.spin(REVERSE, 90, DEGREES)
+        Oikea_Yla.spin(REVERSE, 90, DEGREES)
+        Oikea_Taka.spin(REVERSE, 90, DEGREES)
+
+        Oikea_Etu.set_velocity(50, PERCENT)
+        Oikea_Yla.set_velocity(50, PERCENT)
+        Oikea_Taka.set_velocity(50, PERCENT)
+
+        #Robotti ajaa load zonelle (H)
+
+        Vasen_Etu.spin(FORWARD, 90, DEGREES)
+        Vasen_Yla.spin(FORWARD, 90, DEGREES)
+        Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+        Oikea_Etu.spin(FORWARD, 90, DEGREES)
+        Oikea_Yla.spin(FORWARD, 90, DEGREES)
+        Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+        #Jos Aika ei ole loppunut robotti jatkaa eri liikerataa pitkin (H)
+
+        if (Aikaraja == True):
+            
+            #Robotti peruuttaa keskelle, kääntyy ja ajaa maaliin (H)
+
+            Vasen_Etu.spin(REVERSE, 90, DEGREES)
+            Vasen_Yla.spin(REVERSE, 90, DEGREES)
+            Vasen_Taka.spin(REVERSE, 90, DEGREES)
+
+            Oikea_Etu.spin(REVERSE, 90, DEGREES)
+            Oikea_Yla.spin(REVERSE, 90, DEGREES)
+            Oikea_Taka.spin(REVERSE, 90, DEGREES)
+
+            wait(0, SECONDS)
+
+            Oikea_Etu.spin(FORWARD, 45, DEGREES)
+            Oikea_Yla.spin(FORWARD, 45, DEGREES)
+            Oikea_Taka.spin(FORWARD, 45, DEGREES)
+
+            wait(0, SECONDS)
+
+            Vasen_Etu.spin(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+            Oikea_Etu.spin(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+            wait(0, SECONDS)
+
+            #Robotti kääntyy, ajaa pois maalista, kääntyy ja ajaa tolppaa päin (H)
+
+            Vasen_Etu.spin(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+            wait(0, SECONDS)
+
+            Vasen_Etu.spin(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+            Oikea_Etu.spin(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+            wait(0, SECONDS)
+
+            Vasen_Etu.spin(FORWARD, 45, DEGREES)
+            Vasen_Yla.spin(FORWARD, 45, DEGREES)
+            Vasen_Taka.spin(FORWARD, 45, DEGREES)
+
+            Vasen_Etu.set_velocity(75, PERCENT)
+            Vasen_Yla.set_velocity(75, PERCENT)
+            Vasen_Taka.set_velocity(75, PERCENT)
+
+            Vasen_Etu.spin(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+            Oikea_Etu.spin(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin(FORWARD, 90, DEGREES)
+
+            #Osu tolppaan (H)
+
+        else:
+
+            #Jos aikaa ei enää ole, robotti ajaa tolppaan päin (H)
+
+            Vasen_Etu.set_velocity(100, PERCENT)
+            Vasen_Yla.set_velocity(100, PERCENT)
+            Vasen_Taka.set_velocity(100, PERCENT)
+
+            Vasen_Etu.spin(FORWARD, 90, DEGREES)
+            Vasen_Yla.spin(FORWARD, 90, DEGREES)
+            Vasen_Taka.spin(FORWARD, 90, DEGREES)
+
+            Oikea_Etu.spin(FORWARD, 90, DEGREES)
+            Oikea_Yla.spin(FORWARD, 90, DEGREES)
+            Oikea_Taka.spin(FORWARD, 90, DEGREES)
 
 def user_control():
 
-    looppaaja = False
     digital_out_a.set(True)
     digital_out_b.set(True)
-    brain.screen.clear_screen()
+    brain.screen.clear_screen
     StaattinenAkku = brain.battery.capacity()
     brain.screen.set_font(FontType.MONO20);
 
@@ -143,32 +334,30 @@ def user_control():
             brain.screen.print(" Prosenttia")
             StaattinenAkku = brain.battery.capacity()
 
-
             #Ajamis koodi sekä moottoreiden nopeuden asettaminen
-
 
         Oikea_Etu.spin(FORWARD)
         Oikea_Yla.spin(FORWARD)
         Oikea_Taka.spin(FORWARD)
-
         Vasen_Etu.spin(FORWARD)
         Vasen_Yla.spin(FORWARD)
         Vasen_Taka.spin(FORWARD)
 
-        Oikea_Puoli_Velocity = (controller_1.axis3.position() * -1)
+        Oikea_Puoli_Velocity = (controller_1.axis4.position() * -1)
 
-      
-        Oikea_Etu.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
+        Oikea_Etu.set_velocity(Oikea_Puoli_Velocity + controller_1.axis3.position(), PERCENT)
 
-        Oikea_Yla.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
+        Oikea_Yla.set_velocity(Oikea_Puoli_Velocity + controller_1.axis3.position(), PERCENT)
 
-        Oikea_Taka.set_velocity(Oikea_Puoli_Velocity + controller_1.axis4.position(), PERCENT)
+        Oikea_Taka.set_velocity(Oikea_Puoli_Velocity + controller_1.axis3.position(), PERCENT)
 
-        Vasen_Etu.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
+        Vasen_Etu.set_velocity(controller_1.axis4.position() + controller_1.axis3.position(), PERCENT)
 
-        Vasen_Yla.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
+        Vasen_Yla.set_velocity(controller_1.axis4.position() + controller_1.axis3.position(), PERCENT)
 
-        Vasen_Taka.set_velocity(controller_1.axis3.position() + controller_1.axis4.position(), PERCENT)
+        Vasen_Taka.set_velocity(controller_1.axis4.position() + controller_1.axis3.position(), PERCENT)
+
+        Linko.set_velocity(75, PERCENT)
 
         if controller_1.buttonR1.pressing():
 
@@ -187,6 +376,20 @@ def user_control():
         if controller_1.buttonL2.pressing():
 
             Puimuri.spin(REVERSE)
+
+        if controller_1.buttonA.pressing() and Linko_Varmistin == False:
+
+            Linko.spin(FORWARD)
+
+            Linko_Varmistin = True
+        
+        else:
+
+            wait(1, SECONDS)
+
+            Linko.stop()
+
+            Linko_Varmistin = False
 
         wait(20, MSEC)
 
