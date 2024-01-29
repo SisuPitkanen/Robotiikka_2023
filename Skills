@@ -1,0 +1,74 @@
+#region VEXcode Generated Robot Configuration
+from vex import *
+import urandom
+
+# Brain should be defined by default
+brain=Brain()
+
+# Robot configuration code
+controller_1 = Controller(PRIMARY)
+Vasen_Etu = Motor(Ports.PORT19, GearSetting.RATIO_18_1, True)
+Vasen_Yla = Motor(Ports.PORT20, GearSetting.RATIO_18_1, True)
+Vasen_Taka = Motor(Ports.PORT18, GearSetting.RATIO_18_1, True)
+Oikea_Etu = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
+Oikea_Yla = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
+Oikea_Taka = Motor(Ports.PORT12, GearSetting.RATIO_18_1, False)
+digital_out_b = DigitalOut(brain.three_wire_port.b)
+digital_out_a = DigitalOut(brain.three_wire_port.a)
+Puimuri = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+bumper_manager = Bumper(brain.three_wire_port.h)
+Linko = Motor(Ports.PORT15, GearSetting.RATIO_18_1, False)
+
+
+# wait for rotation sensor to fully initialize
+wait(30, MSEC)
+
+
+def play_vexcode_sound(sound_name):
+    # Helper to make playing sounds from the V5 in VEXcode easier and
+    # keeps the code cleaner by making it clear what is happening.
+    print("VEXPlaySound:" + sound_name)
+    wait(5, MSEC)
+
+# add a small delay to make sure we don't print in the middle of the REPL header
+wait(200, MSEC)
+# clear the console to make sure we don't have the REPL in the console
+print("\033[2J")
+
+#endregion VEXcode Generated Robot Configuration
+
+# ------------------------------------------
+# 
+# 	Project:      VEXcode Project
+#	Author:       VEX
+#	Created:
+#	Description:  VEXcode V5 Python Project
+# 
+# ------------------------------------------
+
+# Library imports
+from vex import *
+
+# Begin project code
+
+def main():
+
+    Oikea_Etu.set_velocity(50, PERCENT)
+    Oikea_Yla.set_velocity(50, PERCENT)
+    Oikea_Taka.set_velocity(50, PERCENT)
+
+    Vasen_Etu.set_velocity(50, PERCENT)
+    Vasen_Yla.set_velocity(50, PERCENT)
+    Vasen_Taka.set_velocity(50, PERCENT)
+
+    while True:
+
+        Oikea_Etu.spin(REVERSE)
+        Oikea_Yla.spin(REVERSE)
+        Oikea_Taka.spin(REVERSE)
+
+        Vasen_Etu.spin(REVERSE)
+        Vasen_Yla.spin(REVERSE)
+        Vasen_Taka.spin(REVERSE)
+
+main()
